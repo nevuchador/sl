@@ -11,7 +11,13 @@
 
 SortedListPtr SLCreate(CompareFuncT cf, DestructFuncT df)
 {
-
+	SortedListPtr list = (SortedListPtr)malloc(sizeof(SortedListPtr));
+	list->cf = cf;
+	list->df = df;
+	list->size=0;
+	list->head==NULL;
+	
+	return list;
 }
 
 /*
@@ -28,7 +34,26 @@ SortedListPtr SLCreate(CompareFuncT cf, DestructFuncT df)
 
 int SLInsert(SortedListPtr list, void *newObj)
 {
+	//check for NULL object
+	if(newObj == NULL)
+	{
+		return 0;
+	}
 
+	//make new node to store newObj
+	Node n = (Node)malloc(sizeof(Node)+sizeof(newObj));
+	n->data = newObj;
+	n->next = NULL;
+
+	//if the list head is null, place the item there
+	if(list->head == NULL)
+	{
+		list->head = n;
+		list->size++;
+	}
+
+
+	
 }
 
 /*
@@ -66,8 +91,9 @@ void SLDestroy(SortedListPtr list)
  */
 
 SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
-{
-
+{	
+	Node head = list->head;
+	SortedListIteratorPtr iter = (SortedListIteratorPtr)malloc(sizeof(head));
 }
 
 
