@@ -111,10 +111,100 @@ int SLInsert(SortedListPtr list, void *newObj)
  * @param SortedListPtr list, a pointer to a sorted list
  * @param void* newObj, a pointer to the object to be removed
  */
-
 int SLRemove(SortedListPtr list, void *newObj)
 {
+	//Create prev and temp pointers.  Prev will point to the previous pointer
+	//after the first node has been viewed, and tmp will point to the current node.  
+	//These will be Nodes (Node pointers).  Comparisons will be made with the
+	//compare func using newObj and the value within the currently-viewed node.
+	//Variable "cmp" will be used to store the result for each comparison.
+	
+	Node prev, temp;
+	int cmp;
 
+	//Note to self: don't forget to free node->data and node for each removal!  
+	//Don't want to lose memory.
+
+	//Border case: the head is NULL.  Here we return 0 since nothing's been removed.
+	if(list->head == NULL)
+	{
+		return 0;
+	}
+	temp = list->head;
+	cmp = list->cf(newObj, temp->data);
+	
+	//We run cmp<=0 to indicate that output was either -1 or 0.  If it's
+	//-1, that means that our current item is smaller than our target.  
+	//If it's 0, that means our current item is our target.  This allows
+	//us to leave the program early if we've reached a point in the list 
+	//where we will no longer find the target (aka, cmp is -1, all values
+	//from this point on will be smaller than the target).  This works because
+	//the list is arranged from greatest to smallest.  
+	
+	//Border case: the head is the target.
+	if(cmp <= 0)
+	{
+		if(cmp == 0)
+		{
+			list->head = list->head->next;
+			list->df(temp->data);
+			free(temp);
+			return 1;
+		}
+		else{
+			return 0;
+		}
+	}
+
+	//Border case: the head is not the target, and it is the only
+	//value in the list.
+	if(list->head->next == NULL)
+	{
+		return 0;
+	}
+
+	//Normal case: the head is not the target for removal, and 
+	//it has a value after that.
+	//Iterate through the list and look for the value.
+	temp = list->head->next;
+	prev = list->head;
+	while(temp->next!=  NULL)
+	{
+		cmp = list->cf(newObj, temp->data);
+		if(cmp <= 0)
+		{
+			if(cmp == 0)
+			{	
+				prev->next = temp->next;	
+				list->df(temp->data);
+				free(temp);
+				return 1;	
+			}
+			else
+			{
+				return 0; 
+			}
+		}
+		temp = temp->next;
+		prev = prev->next;
+	}
+	
+	//Border case: the last value is the target.
+	cmp = list->cf(newObj, temp->data);
+	if(cmp <= 0)
+	{
+		if(cmp == 0)
+		{
+			prev->next = NULL;
+			list->df(temp->data);
+			free(temp);
+			return 1;
+		}
+		else{
+			return 0;
+		}
+	}
+	return 0;
 }
 
 
@@ -125,6 +215,27 @@ int SLRemove(SortedListPtr list, void *newObj)
 
 void SLDestroy(SortedListPtr list)
 {
+	//This function will iterate through a sorted list and free
+	//all of the data and nodes involved in a SortedListPtr.  It will a prev
+	//and temp pointer.  The prev pointer is used in all cases with
+	//more than one node in the actual list.  The temp pointer is used
+	//in all cases.
+	
+	//Border case: list is NULL.
+	if(list->head == NULL)
+	{
+		free(list);
+		return;
+	}
+
+	//Border case: list only has one value, the head.
+	if(list->head->next == NULL)
+	{
+		list->df(list->head->next->data);
+		free(list->head);
+		free(list);
+	}
+	//Address other cases too
 
 }
 
