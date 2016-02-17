@@ -65,7 +65,7 @@ int SLInsert(SortedListPtr list, void *newObj)
 	{
 		if(cmp==0)
 		{
-			free(n->data);
+			list->df(n->data);
 			free(n);
 			return 0;
 		}
@@ -95,7 +95,7 @@ int SLInsert(SortedListPtr list, void *newObj)
 		}	
 		if(cmp==0)
 		{
-			free(n->data);
+			list->df(n->data);
 			free(n);
 			return 0;
 		}
@@ -107,7 +107,7 @@ int SLInsert(SortedListPtr list, void *newObj)
 	cmp = list->cf(n->data,tmp->data);
 	if(cmp==0)
 	{
-		free(n->data);
+		list->df(n->data);
 		free(n);
 		return 0;
 	}
@@ -156,7 +156,11 @@ int SLRemove(SortedListPtr list, void *newObj)
 	//us to leave the program early if we've reached a point in the list 
 	//where we will no longer find the target (aka, cmp is -1, all values
 	//from this point on will be smaller than the target).  This works because
-	//the list is arranged from greatest to smallest.  
+	//the list is arranged from greatest to smallest. 
+	//
+	//When we HAVE reached the target, we delink it from the list and subtract
+	//1 from its refs field.  If the refs field is equal to 0 at this point, we
+	//delete it entirely.   
 	
 	//Border case: the head is the target.
 	if(cmp <= 0)
@@ -164,8 +168,12 @@ int SLRemove(SortedListPtr list, void *newObj)
 		if(cmp == 0)
 		{
 			list->head = list->head->next;
-			list->df(temp->data);
-			free(temp);
+			temp->refs -= 1;
+			if(temp->refs >= 0)
+			{
+				list->df(temp->data);
+				free(temp);
+			}
 			return 1;
 		}
 		else{
@@ -192,9 +200,13 @@ int SLRemove(SortedListPtr list, void *newObj)
 		{
 			if(cmp == 0)
 			{	
-				prev->next = temp->next;	
-				list->df(temp->data);
-				free(temp);
+				prev->next = temp->next;
+				temp->refs -= 1;
+				if(temp->refs >= 0)
+				{	
+					list->df(temp->data);
+					free(temp);
+				}
 				return 1;	
 			}
 			else
@@ -213,8 +225,12 @@ int SLRemove(SortedListPtr list, void *newObj)
 		if(cmp == 0)
 		{
 			prev->next = NULL;
-			list->df(temp->data);
-			free(temp);
+			temp->refs -= 1;
+			if(temp->refs >= 0)
+			{
+				list->df(temp->data);
+				free(temp);
+			}
 			return 1;
 		}
 		else{
@@ -238,6 +254,8 @@ void SLDestroy(SortedListPtr list)
 	//more than one node in the actual list.  The temp pointer is used
 	//in all cases.
 	
+	Node curr, next;	
+
 	//Border case: list is NULL.
 	if(list->head == NULL)
 	{
@@ -251,8 +269,33 @@ void SLDestroy(SortedListPtr list)
 		list->df(list->head->next->data);
 		free(list->head);
 		free(list);
+		return;
 	}
-	//Address other cases too
+
+	//Normal case: the list has two or more values.
+	//Start "curr" at the first Node and "next" at
+	//the second Node. While next != NULL, iterate through
+	//the list, deleting the node at "curr", then moving
+	//curr to next, then moving next to next->next.  
+	//
+	//Once next is NULL, we delete the node at curr (the last node)
+	//and return.  
+	
+	curr = list->head;
+	next = list->head->next;
+	while(next != NULL)
+	{
+		list->df(curr->data);
+		free(curr);
+		curr = next;
+		next = next->next;
+	}
+	
+	list->df(curr->data);
+	free(curr);
+	free(list);
+	return;
+	
 
 }
 
