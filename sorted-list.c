@@ -44,10 +44,11 @@ int SLInsert(SortedListPtr list, void *newObj)
 		return 0;
 	}
 
-	//make new node to store newObj
+	//make new node to store newObj; must free this node if it is not inserted, aka in 0 return.
 	n = (Node)malloc(sizeof(Node)+sizeof(newObj));
 	n->data = newObj;
 	n->next = NULL;
+	n->refs = 1;
 
 	//border case: if the list head is null, place the item there
 	if(list->head == NULL)
@@ -62,7 +63,12 @@ int SLInsert(SortedListPtr list, void *newObj)
           //border case: new item is greater than the head of the list
 	if(cmp >= 0)
 	{
-		if(cmp==0){return 0;}
+		if(cmp==0)
+		{
+			free(n->data);
+			free(n);
+			return 0;
+		}
 		list->head = n;
 		n->next = tmp;
 		list->size++;
@@ -71,11 +77,12 @@ int SLInsert(SortedListPtr list, void *newObj)
 
 	prev = list->head;
 	tmp = tmp->next;
-	//border case: only 1 item
+	//border case: only 1 item in list, which is at head; new item is less than it
 	if(tmp == NULL)
 	{
 		prev->next = n;
 	}
+	//Normal case: item's proper place is anywhere else, besides after last item
 	while(tmp->next!= NULL)
 	{
 		cmp = list->cf(n->data,tmp->data);
@@ -86,14 +93,24 @@ int SLInsert(SortedListPtr list, void *newObj)
 			n->next = tmp;
 			return 1;		
 		}	
-		if(cmp==0){return 0;}
+		if(cmp==0)
+		{
+			free(n->data);
+			free(n);
+			return 0;
+		}
 		tmp = tmp->next;
 		prev=prev->next;
 		
 	}
 	
 	cmp = list->cf(n->data,tmp->data);
-	if(cmp==0){return 0;}
+	if(cmp==0)
+	{
+		free(n->data);
+		free(n);
+		return 0;
+	}
 	if(cmp>0)
 	{
 		prev->next = n;
