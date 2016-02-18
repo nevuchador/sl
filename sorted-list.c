@@ -149,7 +149,6 @@ int SLRemove(SortedListPtr list, void *newObj)
 
 	//Note to self: don't forget to free node->data and node for each removal!  
 	//Don't want to lose memory.
-
 	//Border case: the head is NULL.  Here we return 0 since nothing's been removed.
 	if(list->head == NULL)
 	{
@@ -171,7 +170,7 @@ int SLRemove(SortedListPtr list, void *newObj)
 	//delete it entirely.   
 	
 	//Border case: the head is the target.
-	if(cmp <= 0)
+	if(cmp >= 0)
 	{
 		if(cmp == 0)
 		{
@@ -204,14 +203,14 @@ int SLRemove(SortedListPtr list, void *newObj)
 	while(temp->next!=  NULL)
 	{
 		cmp = list->cf(newObj, temp->data);
-		if(cmp <= 0)
+		if(cmp >= 0)
 		{
 			if(cmp == 0)
-			{	
+			{
 				prev->next = temp->next;
 				temp->refs -= 1;
 				if(temp->refs <= 0)
-				{	
+				{
 					list->df(temp->data);
 					free(temp);
 				}
@@ -228,7 +227,7 @@ int SLRemove(SortedListPtr list, void *newObj)
 	
 	//Border case: the last value is the target.
 	cmp = list->cf(newObj, temp->data);
-	if(cmp <= 0)
+	if(cmp >= 0)
 	{
 		if(cmp == 0)
 		{
@@ -241,10 +240,12 @@ int SLRemove(SortedListPtr list, void *newObj)
 			}
 			return 1;
 		}
-		else{
+		else
+		{
 			return 0;
 		}
 	}
+	printf("no deletion occurred, returning.\n");
 	return 0;
 }
 

@@ -7,16 +7,20 @@ int compareInt(void* a,void* b)
 {	
 	int x = *(int*)a;
 	int y = *(int*)b;
-	if(x==y){return 0;}
-	if(x>y){return 1;}
-	
+	printf("comparison: %d and %d!\n", *(int*)a, *(int*)b);
+	if(x==y){printf("comp return 0!\n");return 0;}
+	if(x>y){printf("comp return 1!\n");return 1;}
+	printf("comp return -1!\n");
 	return -1;
 }
 
+
 void destroyInt(void* a)
 {
-	int* x = (int*)a;
-	free(x);
+	printf("initiate destroyInt!\n");
+//	int* x = (int*)a;
+//	free(x);
+	return;
 }
 
 int compareChar(void* a,void* b)	
@@ -45,7 +49,7 @@ void intTest()
 	int* c = malloc(sizeof(int));
 	int* d = malloc(sizeof(int));
 	int* e = malloc(sizeof(int));
-
+//	int* f = malloc(sizeof(int));
 	*x=5;
 	*y=8;
 	*z=1;
@@ -54,6 +58,7 @@ void intTest()
 	*c=7;
 	*d=6;
 	*e=2;
+//	*f=5;
 
 	
 	int (*CompareFuncT)( void *, void * ) = &compareInt;
@@ -70,6 +75,7 @@ void intTest()
 	SLInsert(sl,c);
 	SLInsert(sl,d);
 	SLInsert(sl,e);
+//	SLInsert(sl,f);
 
 	SortedListIteratorPtr iter = SLCreateIterator(sl);
 	printf("Here is the sorted list of integers:\n");
@@ -83,8 +89,8 @@ void intTest()
 	printf("\nNow we remove the 7, 3, and 8:\n");
 
 	SLRemove(sl,c);
-	printf("%d\n",*(int*)sl->head->next->data);
-	/*
+	SLRemove(sl,a);
+	SLRemove(sl,y);	
 	SortedListIteratorPtr iter1 = SLCreateIterator(sl);
 	printf("Here is the sorted list of integers:\n");
 	while(iter1->curr!=NULL)
@@ -92,7 +98,7 @@ void intTest()
 		printf("%d\n",*(int*)iter1->curr->data);
 		SLNextItem(iter1);
 	}
-	SLDestroyIterator(iter1);*/
+	SLDestroyIterator(iter1);
 }
 
 
