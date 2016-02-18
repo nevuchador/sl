@@ -12,12 +12,12 @@
 SortedListPtr SLCreate(CompareFuncT cf, DestructFuncT df)
 {
 	
-	SortedListPtr list = (SortedListPtr)malloc(sizeof(SortedListPtr));
+	SortedListPtr list = (SortedListPtr)malloc(sizeof(SortedListPtr)+cf);
 	list->cf = cf;
 	list->df = df;
 	list->size=0;
-	list->head==NULL;
-	
+	list->head=NULL;
+
 	return list;
 }
 
@@ -206,12 +206,12 @@ int SLRemove(SortedListPtr list, void *newObj)
 		if(cmp >= 0)
 		{
 			if(cmp == 0)
-			{
+			{	
 				prev->next = temp->next;
 				temp->refs -= 1;
 				if(temp->refs <= 0)
-				{
-					list->df(temp->data);
+				{	
+					list->df((void*)temp->data);
 					free(temp);
 				}
 				return 1;	
@@ -245,7 +245,7 @@ int SLRemove(SortedListPtr list, void *newObj)
 			return 0;
 		}
 	}
-	printf("no deletion occurred, returning.\n");
+	//printf("no deletion occurred, returning.\n");
 	return 0;
 }
 

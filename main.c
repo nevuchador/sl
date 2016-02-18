@@ -16,11 +16,9 @@ int compareInt(void* a,void* b)
 
 
 void destroyInt(void* a)
-{
-	printf("initiate destroyInt!\n");
-//	int* x = (int*)a;
-//	free(x);
-	return;
+{ 
+	free(a);
+	printf("did it.\n");
 }
 
 int compareChar(void* a,void* b)	
@@ -75,7 +73,7 @@ void intTest()
 	SLInsert(sl,c);
 	SLInsert(sl,d);
 	SLInsert(sl,e);
-//	SLInsert(sl,f);
+
 
 	SortedListIteratorPtr iter = SLCreateIterator(sl);
 	printf("Here is the sorted list of integers:\n");
@@ -86,11 +84,11 @@ void intTest()
 	}
 	SLDestroyIterator(iter);
 
-	printf("\nNow we remove the 7, 3, and 8:\n");
+	printf("\nNow we remove the 7\n");
 
 	SLRemove(sl,c);
-	SLRemove(sl,a);
-	SLRemove(sl,y);	
+	SLRemove(sl,z);
+	SLRemove(sl,y);
 	SortedListIteratorPtr iter1 = SLCreateIterator(sl);
 	printf("Here is the sorted list of integers:\n");
 	while(iter1->curr!=NULL)
@@ -105,5 +103,7 @@ void intTest()
 int main(int argc, char** argv)
 {	
 	intTest();
+	
+	
 	return 0;
 }
