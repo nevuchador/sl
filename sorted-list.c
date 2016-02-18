@@ -179,7 +179,7 @@ int SLRemove(SortedListPtr list, void *newObj)
 		{
 			list->head = list->head->next;
 			temp->refs -= 1;
-			if(temp->refs >= 0)
+			if(temp->refs <= 0)
 			{
 				list->df(temp->data);
 				free(temp);
@@ -212,7 +212,7 @@ int SLRemove(SortedListPtr list, void *newObj)
 			{	
 				prev->next = temp->next;
 				temp->refs -= 1;
-				if(temp->refs >= 0)
+				if(temp->refs <= 0)
 				{	
 					list->df(temp->data);
 					free(temp);
@@ -236,7 +236,7 @@ int SLRemove(SortedListPtr list, void *newObj)
 		{
 			prev->next = NULL;
 			temp->refs -= 1;
-			if(temp->refs >= 0)
+			if(temp->refs <= 0)
 			{
 				list->df(temp->data);
 				free(temp);
@@ -329,6 +329,7 @@ SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
 	SortedListIteratorPtr iter = (SortedListIteratorPtr)malloc(
 		sizeof(SortedListPtr) + sizeof(tmp));
 	iter->curr = tmp;
+	iter->curr->refs += 1;
 	return iter;
 }
 
@@ -341,9 +342,18 @@ SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
 
 void SLDestroyIterator(SortedListIteratorPtr iter)
 {
+
 	if(iter->curr==NULL)
 	{
 		return;
+	}
+	//Before destroying the iterator, we destroy the node it points to
+	//if its current references are <=1 (meaning that nothing but
+	//the iterator itself is pointing at it)
+	if(iter->curr->refs <= 1)
+	{
+			
+
 	}
 	free(iter->curr->data);
 	free(iter->curr);
