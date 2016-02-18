@@ -61,8 +61,8 @@ void intTest()
 //	*f=5;
 
 	
-	int (*CompareFuncT)( void *, void * ) = &compareInt;
-	void (*DestructFuncT)( void * ) =&destroyInt;
+	int (*CompareFuncT)(void*,void*) = &compareInt;
+	void (*DestructFuncT)(void*) = &destroyInt;
 
 	SortedListPtr sl= SLCreate(CompareFuncT,DestructFuncT);
 		
