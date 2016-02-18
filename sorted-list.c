@@ -294,7 +294,9 @@ void SLDestroy(SortedListPtr list)
 	next = list->head->next;
 	while(next != NULL)
 	{
-		list->df(curr->data);
+		void* test = NULL;
+		list->df(test);
+//		list->df(curr->data);
 		free(curr);
 		curr = next;
 		next = next->next;
@@ -329,6 +331,7 @@ SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
 		sizeof(SortedListPtr) + sizeof(tmp));
 	iter->curr = tmp;
 	iter->curr->refs += 1;
+	iter->df = list->df;
 	return iter;
 }
 
@@ -351,13 +354,17 @@ void SLDestroyIterator(SortedListIteratorPtr iter)
 	//the iterator itself is pointing at it)
 	if(iter->curr->refs <= 1)
 	{
-			
+		iter->df(iter->curr->data);
+		free(iter->curr);	
 
 	}
-	free(iter->curr->data);
-	free(iter->curr);
+	//Note for Michael: The two lines in the "if" statement were originally
+	//right here.  I moved them there because destroying an iterator does
+	//not necessarily mean that we need to destroy the node it points to.
 	free(iter);
+	return;
 }
+
 
 /*
  * SLNextItem returns a pointer to the data associated with the
@@ -370,7 +377,19 @@ void SLDestroyIterator(SortedListIteratorPtr iter)
 
 void * SLNextItem(SortedListIteratorPtr iter)
 {
+	//If the node the iterator was on before ends up with 
+	//a ref number <=0, we permanently delete it.
+	//We can just delete it because if its refs is 0,
+	//that means nothing else is pointing to the node itself,
+	//meaning virtually nothing else can reference it.
 	Node tmp = iter->curr->next;
+	Node curr = iter->curr;
+	curr->refs -= 1;
+	if(curr->refs <= 0)
+	{
+		iter->df(curr->data);
+		free(curr);
+	}
 	if(tmp==NULL)
 	{	
 		//show that the iterator has passed the end of the list
@@ -378,6 +397,7 @@ void * SLNextItem(SortedListIteratorPtr iter)
 		return NULL;
 	}
 	iter->curr = tmp;
+	iter->curr->refs += 1;
 	return tmp->data;
 }
 
