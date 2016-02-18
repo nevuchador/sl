@@ -126,7 +126,7 @@ int SLRemove(SortedListPtr list, void *newObj);
  */
 struct SortedListIterator
 {
-  Node* curr;	//the current item the Iterator points to.
+  Node curr;	//the current item the Iterator points to.
 };
 typedef struct SortedListIterator* SortedListIteratorPtr;
 

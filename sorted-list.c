@@ -44,21 +44,21 @@ int SLInsert(SortedListPtr list, void *newObj)
 	{
 		return 0;
 	}
-<<<<<<< HEAD
+
 	
 	//make new node to store newObj
 	n = (Node)malloc(sizeof(Node)+sizeof(newObj));
 	n->data = newObj;
 	n->next = NULL;
 		
-=======
+
 
 	//make new node to store newObj; must free this node if it is not inserted, aka in 0 return.
 	n = (Node)malloc(sizeof(Node)+sizeof(newObj));
 	n->data = newObj;
 	n->next = NULL;
 	n->refs = 1;
->>>>>>> ac393c0436d20c780051b81b7df97ec0db343488
+
 
 	//border case: if the list head is null, place the item there
 	if(list->head == NULL)
@@ -341,6 +341,10 @@ SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
 
 void SLDestroyIterator(SortedListIteratorPtr iter)
 {
+	if(iter->curr==NULL)
+	{
+		return;
+	}
 	free(iter->curr->data);
 	free(iter->curr);
 	free(iter);
