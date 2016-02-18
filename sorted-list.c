@@ -11,6 +11,7 @@
 
 SortedListPtr SLCreate(CompareFuncT cf, DestructFuncT df)
 {
+	
 	SortedListPtr list = (SortedListPtr)malloc(sizeof(SortedListPtr));
 	list->cf = cf;
 	list->df = df;
@@ -43,20 +44,21 @@ int SLInsert(SortedListPtr list, void *newObj)
 	{
 		return 0;
 	}
-
+	
 	//make new node to store newObj
 	n = (Node)malloc(sizeof(Node)+sizeof(newObj));
 	n->data = newObj;
 	n->next = NULL;
+		
 
 	//border case: if the list head is null, place the item there
 	if(list->head == NULL)
 	{
+		
 		list->head = n;
 		list->size++;
 		return 1;
 	}
-		
 	tmp = list->head;
 	cmp = list->cf(n->data,tmp->data);
           //border case: new item is greater than the head of the list
@@ -140,8 +142,15 @@ void SLDestroy(SortedListPtr list)
 
 SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
 {	
-	Node curr = list->head;
-	SortedListIteratorPtr iter = (SortedListIteratorPtr)malloc(sizeof(list->head));
+	if(list == NULL || list->head == NULL)
+	{
+		return NULL;
+	}
+	Node tmp = list->head;
+	SortedListIteratorPtr iter = (SortedListIteratorPtr)malloc(
+		sizeof(SortedListPtr) + sizeof(tmp));
+	iter->curr = tmp;
+	return iter;
 }
 
 
@@ -153,7 +162,9 @@ SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
 
 void SLDestroyIterator(SortedListIteratorPtr iter)
 {
-
+	free(iter->curr->data);
+	free(iter->curr);
+	free(iter);
 }
 
 /*
@@ -167,7 +178,15 @@ void SLDestroyIterator(SortedListIteratorPtr iter)
 
 void * SLNextItem(SortedListIteratorPtr iter)
 {
-
+	Node tmp = iter->curr->next;
+	if(tmp==NULL)
+	{	
+		//show that the iterator has passed the end of the list
+		iter->curr = NULL;
+		return NULL;
+	}
+	iter->curr = tmp;
+	return tmp->data;
 }
 
 
@@ -180,6 +199,7 @@ void * SLNextItem(SortedListIteratorPtr iter)
 
 void * SLGetItem( SortedListIteratorPtr iter )
 {
-
+	if(iter->curr==NULL){return NULL;}
+	return iter->curr->data;
 }
 
