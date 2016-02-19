@@ -211,7 +211,7 @@ int SLRemove(SortedListPtr list, void *newObj)
 				temp->refs -= 1;
 				if(temp->refs <= 0)
 				{	
-					list->df((void*)temp->data);
+					list->df(temp->data);
 					free(temp);
 				}
 				return 1;	
@@ -294,9 +294,7 @@ void SLDestroy(SortedListPtr list)
 	next = list->head->next;
 	while(next != NULL)
 	{
-		void* test = NULL;
-		list->df(test);
-//		list->df(curr->data);
+		list->df(curr->data);
 		free(curr);
 		curr = next;
 		next = next->next;
