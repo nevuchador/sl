@@ -12,7 +12,7 @@
 SortedListPtr SLCreate(CompareFuncT cf, DestructFuncT df)
 {
 	
-	SortedListPtr list = (SortedListPtr)malloc(sizeof(SortedListPtr)+cf);
+	SortedListPtr list = (SortedListPtr)malloc(sizeof(SortedListPtr)+ 17);
 	list->cf = cf;
 	list->df = df;
 	list->size=0;
