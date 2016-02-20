@@ -89,6 +89,7 @@ int SLInsert(SortedListPtr list, void *newObj)
 	if(tmp == NULL)
 	{
 		prev->next = n;
+		return 1;
 	}
 	//Normal case: item's proper place is anywhere else, besides after last item
 	while(tmp->next!= NULL)
