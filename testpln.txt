@@ -1,0 +1,56 @@
+TESTING PLAN - GENERIC SORTED LIST
+----------------------------------
+
+
+SECTION 1: INTRODUCTION
+------------
+
+In order to fully test our generic sorted list, we will test data of 
+various types:
+	1. Integers
+	2. Characters
+	3. Strings
+	4. Structs 
+
+Each of these tests will follow a standard procedure:
+	A. Allocate memory for data to be inserted.
+	B. Create empty list.
+	C. Perform insertions.
+	D. Create Iterator, iterate through and print list, destroy Iterator.
+	E. Remove specific values.
+	F. Create Iterator, iterate through and print list, destroy Iterator.
+	G. Destroy list.
+
+In this way, we test all of the functions used in the creation, insertion, and deletion of our sorted list and associated iterator. By performing multiple insertions and deletions, we test border cases such as inserting into an empty list, inserting a repeated value, deleting the front item, and deleting the rear item.
+
+SECTION 2: TESTS
+----------------
+
+1. INTEGERS
+	OPERATION:				EXPECTED OUTPUT:
+	Insert: 5,8,2,3,4,7,6,2,5,1,8		8,7,6,5,4,3,2,1
+	Remove: 1,2,3,8				7,6,5,4
+
+2. CHARACTERS
+	OPERATION:				EXPECTED OUTPUT:
+	Insert: a,b,c,d,e,f,g,h,a,f,h		h,g,f,e,d,c,b,a
+	Remove: a,b,c,h				g,f,e,d
+
+3. STRINGS
+	OPERATION:				EXPECTED OUTPUT:
+	Insert: did,you,ever,hear,the,tragedy,
+		of,darth,plagueis,the,wise
+						you,wise,tragedy,the,plagueis,of,hear,
+						ever,did,darth
+	Remove: did,hear,ever,the,tragedy,of,darth
+						you,wise,plagueis
+4. STRUCTS
+	To test inputs of structs into our sorted list, we defined a struct that
+	represents a student. Each STUDENT has a char* NAME and a double GPA
+
+	OPERATION:				EXPECTED OUTPUT:
+	Insert: {Jaime,2.4},{Cersei,3.3}
+		{Tyrion,3.99}{Tywin,3.78}	Tyrion,Tywin,Cersei,Jaime
+	Remove: Tyrion,Tywin			Cersei,Jaime
+	
+
