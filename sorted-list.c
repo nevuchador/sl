@@ -346,6 +346,7 @@ void SLDestroyIterator(SortedListIteratorPtr iter)
 
 	if(iter->curr==NULL)
 	{
+		free(iter);
 		return;
 	}
 	//Before destroying the iterator, we destroy the node it points to
