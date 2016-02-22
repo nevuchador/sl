@@ -12,7 +12,7 @@
 SortedListPtr SLCreate(CompareFuncT cf, DestructFuncT df)
 {
 	
-	SortedListPtr list = (SortedListPtr)malloc(sizeof(SortedListPtr)+cf);
+	SortedListPtr list = (SortedListPtr)malloc(sizeof(SortedListPtr)+ 17);
 	list->cf = cf;
 	list->df = df;
 	list->size=0;
@@ -89,6 +89,7 @@ int SLInsert(SortedListPtr list, void *newObj)
 	if(tmp == NULL)
 	{
 		prev->next = n;
+		return 1;
 	}
 	//Normal case: item's proper place is anywhere else, besides after last item
 	while(tmp->next!= NULL)
@@ -211,7 +212,7 @@ int SLRemove(SortedListPtr list, void *newObj)
 				temp->refs -= 1;
 				if(temp->refs <= 0)
 				{	
-					list->df((void*)temp->data);
+					list->df(temp->data);
 					free(temp);
 				}
 				return 1;	
@@ -294,9 +295,7 @@ void SLDestroy(SortedListPtr list)
 	next = list->head->next;
 	while(next != NULL)
 	{
-		void* test = NULL;
-		list->df(test);
-//		list->df(curr->data);
+		list->df(curr->data);
 		free(curr);
 		curr = next;
 		next = next->next;
@@ -347,6 +346,7 @@ void SLDestroyIterator(SortedListIteratorPtr iter)
 
 	if(iter->curr==NULL)
 	{
+		free(iter);
 		return;
 	}
 	//Before destroying the iterator, we destroy the node it points to
